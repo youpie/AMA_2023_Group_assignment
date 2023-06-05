@@ -92,7 +92,7 @@ for repeat in range(attempts):
         route.append(start_point)
 
     # last_point = start_point
-    # for point in route:                                             #calculate the distance from point to nearest point on route and adds to total distances
+    # for point in route:                                             #calculate the distance from point to nearest point on route and adds to total distance
     #     distance = inverse_pythagoran(points, point, last_point)
     #     total_distance += distance[0]+distance[1]
     #     last_point = point
