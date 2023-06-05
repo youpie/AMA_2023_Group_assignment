@@ -82,16 +82,20 @@ for repeat in range(attempts):
     route.append(start_point)
     while(len(points)!=len(route)):                                         #find the shortest distance from all points on route starting from starting point and following
         closest_next_point = closest_point(points,current_point,route)
+        distance = inverse_pythagoran(points, closest_next_point, current_point)
+        total_distance += distance[0]+distance[1]
         current_point = closest_next_point
         route.append(closest_next_point)
     else:
+        distance = inverse_pythagoran(points, start_point, route[-1])
+        total_distance += distance[0]+distance[1]
         route.append(start_point)
 
-    last_point = start_point
-    for point in route:                                             #calculate the distance from point to nearest point on route and adds to total distance
-        distance = inverse_pythagoran(points, point, last_point)
-        total_distance += distance[0]+distance[1]
-        last_point = point
+    # last_point = start_point
+    # for point in route:                                             #calculate the distance from point to nearest point on route and adds to total distance
+    #     distance = inverse_pythagoran(points, point, last_point)
+    #     total_distance += distance[0]+distance[1]
+    #     last_point = point
 
     execution_time = (time.time() - start_time)
     #print("--- %s seconds ---" % execution_time)
