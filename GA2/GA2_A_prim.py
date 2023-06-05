@@ -55,4 +55,4 @@ for i in range(len(Outputlist[0])-1):
     Outputlist[i+1][0] = i+1
     Outputlist[0][i+1] = i+1
 
-np.savetxt(os.path.dirname(__file__) + '\OutputGAS2A.csv', Outputlist, delimiter =", ", fmt ='% s')
+np.savetxt(os.path.dirname(__file__) + '\OutputGAS2A1.csv', Outputlist, delimiter =", ", fmt ='% s')
