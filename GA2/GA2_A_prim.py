@@ -3,12 +3,6 @@ import csv
 import os
 import math
 
-class Point:
-    def __init__(self, number, x, y):
-        self.number = number
-        self.x = float(x)
-        self.y = float(y)
-
 def Distance(Xa, Ya, Xb, Yb):
     D = (math.sqrt((Xa-Xb)**2+(Ya-Yb)**2))
     return D
