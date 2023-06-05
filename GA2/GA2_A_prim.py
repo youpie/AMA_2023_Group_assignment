@@ -3,7 +3,6 @@ import csv
 import os
 import math
 
-#same old same old point class
 class Point:
     def __init__(self, number, x, y):
         self.number = number
