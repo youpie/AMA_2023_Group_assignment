@@ -91,14 +91,7 @@ for repeat in range(attempts):
         total_distance += distance[0]+distance[1]
         route.append(start_point)
 
-    # last_point = start_point
-    # for point in route:                                             #calculate the distance from point to nearest point on route and adds to total distances
-    #     distance = inverse_pythagoran(points, point, last_point)
-    #     total_distance += distance[0]+distance[1]
-    #     last_point = point
-
     execution_time = (time.time() - start_time)
-    #print("--- %s seconds ---" % execution_time)
     execution_times.append(execution_time)
 write_csv(total_distance,route)
 np_execution_times = np.asarray(execution_times)
