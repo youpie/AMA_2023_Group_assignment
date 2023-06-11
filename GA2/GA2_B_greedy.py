@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import random
 from os import environ
 environ['OMP_NUM_THREADS'] = '4'
+import ast
 
 #calculate shortest path using Closest node heuristic
 
@@ -29,25 +30,17 @@ def write_points(ammount,currlength,point_array):           #fill the input file
         LOAD_csv()
 
 
-def LOAD_csv():
-    class point:                        #create class with position data and array of distance to all points
-        x = 0.0
-        y = 0.0
-        distanceNearestPoint = 0
-        nearestPoint = 0
-    
+def LOAD_csv():  
     with open("/home/youpie/OneDrive/School!/AMA4/Projecten/Groep project/AMA_2023_Group_assignment/GA2/inputGAS2B.csv") as csv_file:
         next(csv_file)
         csv_read=csv.reader(csv_file, delimiter=',')
-        p = point()         #create point 0,0
-        p.x = 0
-        p.y = 0
-        points.append(p)
-        for row in csv_read:
-            p = point()
-            p.x = int(row[1])
-            p.y = int(row[2])
-            points.append(p)
+        for i,row in enumerate(csv_read):
+            points.extend([[]])
+            points[i].append(int(row[1]))
+            points[i].append(int(row[2]))
+    print(points)
+    print(len(points))
+
 
 def write_csv(distance, route):                                     #write total distance and route to csv file
     with open('/home/youpie/OneDrive/School!/AMA4/Projecten/Groep project/AMA_2023_Group_assignment/GA2/OutputGAS2B.csv', mode='w') as output_file:
@@ -64,8 +57,6 @@ def write_csv(distance, route):                                     #write total
         output_writer.writerow(distance_row)
         output_writer.writerow(route_row)
 
-
-
 def plot(points_objects,route):             #plot the points
     temp_point_array = list([[],[]])
     for i in range(len(points_objects)):
@@ -78,63 +69,56 @@ def plot(points_objects,route):             #plot the points
         plt.plot([points_objects[route[i+1]].x,points_objects[route[i+1]].x],[points_objects[route[i]].y,points_objects[route[i+1]].y])
     plt.show()
 
-def closest_point(points_array ,point):
-    own_coords = np.array([points_array[point].x,points_array[point].y])
-    temp_point_array = np.full((len(points),2),own_coords)
-    for i in range(len(points_array)):                          #fill a 2D array with coordinates, instead of 2 arrays with x column and y column but just a bunch of xy arrays
-        if points_array[i].distanceNearestPoint == 0:
-            temp_point_array[i][0] = points_array[i].x
-            temp_point_array[i][1] = points_array[i].y
-    temp_point_array_norm = np.subtract(temp_point_array,own_coords)
+def calculate_distances(points_array ,point,where):
+    short_points_array = np.asarray(points_array[where+1:len(points_array)])
+    if(len(short_points_array) <= 0): return 0
+    temp_point_array_norm = np.subtract(short_points_array,point)
     distance_array = np.linalg.norm(temp_point_array_norm,axis=1)           #use linear algebra to calculate the normalised vector values of the point from the origin
-    try:
-        closest_distance = np.min(distance_array[np.nonzero(distance_array)])
-        closest_point = np.where(distance_array == closest_distance)
-    except:
-        closest_distance = 0                                                    #there is a very small chance that finding the minimal value goes wrong, this is to account for when that happens
-        closest_point = [[0]]
-    points[point].distanceNearestPoint = closest_distance
-    points[point].nearestPoint = closest_point
-    return int(closest_point[0][0])
+    for i,distance_to_point in enumerate(distance_array):
+            key = str([[i],[i+where+1]])  
+            distance_dict[key] = distance_to_point
 
 def inverse_pythagoran(points_array,point1,point2):                                 #find horizontal and vertical distance from point to nearest point 
     horizontal  = np.abs(points_array[point1].x - points_array[point2].x)
     vertical    = np.abs(points_array[point1].y - points_array[point2].y)
     return np.array([horizontal,vertical])
-    
-points = list()             #create an array of objects of all points
+
+points = list()   
 execution_times = list()
 LOAD_csv()
-write_points(add_points,len(points),points)
 for repeat in range(attempts):
     start_time = time.time()                #start timer to time the time to execute code
-    route = list()              #create array with the final route
-    total_distance = 0
+    distance_dict = {} 
+    node_connections = np.zeros((len(points)))
+    print(node_connections)
+    route = list()
+    connections = list()
+    max_connections = len(points)*2
+    for i, current_point in enumerate(points):
+        calculate_distances(points,current_point,i)
+    print(distance_dict)
+    print(len(distance_dict))
+    
+    while np.sum(node_connections) < max_connections:
+        if(not distance_dict):
+            print("This problem can not be solved by greedy")
+            break
+        min_dist = min(distance_dict)
+        connecting_points = ast.literal_eval(min_dist)
+        if(connecting_points == [[8],[9]]): print("nu")
+        if(node_connections[connecting_points[0]] < 2 and node_connections[connecting_points[1]] < 2):
+            print(min_dist)
+            connections.append(connecting_points)
+            node_connections[connecting_points[0]] += 1
+            node_connections[connecting_points[1]] += 1
+        distance_dict.pop(min_dist)
+    
+    print(connections)
 
-    if(add_point_every_loop):
-        write_points(add_points,len(points),points)    
 
-    current_point = start_point
-    route.append(start_point)
-    while(len(points)!=len(route)):                                         #find the shortest distance from all points on route starting from starting point and following
-        closest_next_point = closest_point(points,current_point)
-        current_point = closest_next_point
-        route.append(closest_next_point)
-    else:
-        route.append(start_point)
-        last_point = start_point
-        for i,current_point in enumerate(route):                                #calculate the total distance that has been traveled
-            distance = inverse_pythagoran(points, last_point, current_point)
-            last_point = current_point
-            total_distance += distance[0]+distance[1]   
 
-    execution_time = (time.time() - start_time)
-    execution_times.append(execution_time)
+    execution_times.append(time.time() - start_time)
 
-    for i in range(len(points)):
-        points[i].distanceNearestPoint = 0
-write_csv(total_distance,route)
 np_execution_times = np.asarray(execution_times)
 print("average time: " + str(np.average(np_execution_times)))                       #count exectution time
 print("total time for %s attempts: " %(attempts) + str(np.sum(np_execution_times)))
-plot(points,route)

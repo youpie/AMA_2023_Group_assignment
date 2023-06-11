@@ -5,7 +5,7 @@ import time
 #calculate shortest path using Closest node heuristic
 
 start_point = 0                 #what point to start at
-attempts = 300                  #how often to run the program to get average execution time
+attempts = 10000                  #how often to run the program to get average execution time
 
 def LOAD_csv():
     class point:                        #create class with position data and array of distance to all points
