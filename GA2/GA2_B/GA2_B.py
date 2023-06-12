@@ -6,12 +6,13 @@ from RandomPoints import RandomPoints
 from matplotlib import pyplot
 import time
 
+#this is used to test the algorithm itself, you can input the name of the class the algorithm is in
 def TestAlgo(Algo):
-    Ftime = time.time()
+    Ftime = time.time() #start checking time
     TotalDistance = 0
-    for i in range(100):#for the average run amount
-        NR, Xs, Ys = RandomPoints(90)
-        NBAlgo = Algo(NR, Xs, Ys)
+    for i in range(100):#for the average run amount of distance
+        NR, Xs, Ys = RandomPoints(90) #calls up a function in the randompoints file to generate 90 unique points
+        NBAlgo = Algo(NR, Xs, Ys) #runs the algorithm with the generated points
         Path, Distance = NBAlgo.RunAlgo()
         TotalDistance += Distance
         #print(Path[0])
