@@ -48,7 +48,10 @@ def calculate_time(array):
             print(xtotal[0])
         #otherwise just print the zero that was found
     else:
-        print(xtotal[0])
+        if len(xtotal) == 1:
+            print(xtotal[0])
+        else:
+            print("No zeroes were found.")
 #inputfile is defined here
 file_path = 'inputGA1B.csv'
 
