@@ -7,7 +7,7 @@ import csv
 
 def LoadPoints():
     pointarray = []
-    with open(os.path.dirname(__file__) + "\inputGAS2C.csv", "r") as input:
+    with open(os.path.dirname(__file__) + "\inputGAS2B.csv", "r") as input:
         locations = csv.DictReader(input)
         for pointentry in locations:
             point = [int(pointentry["Point number"]),float(pointentry["x"]), float(pointentry["y"])]
@@ -18,6 +18,7 @@ PointArray = LoadPoints()
 Nr, Xs, Ys = zip(*PointArray)
 NBAlgo = NearestNeighbour(list(Nr), list(Xs), list(Ys))
 Path, Distance, Time = NBAlgo.RunAlgo()
+print(Distance)
 
 
 pyplot.plot(Path[1],Path[2])
