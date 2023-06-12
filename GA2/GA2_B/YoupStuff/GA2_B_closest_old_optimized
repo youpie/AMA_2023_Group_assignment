@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 #calculate shortest path using Closest node heuristic
 
 start_point = 0                 #what point to start at
-attempts = 1000                  #how often to run the program to get average execution time
+attempts = 10000                  #how often to run the program to get average execution time
 
 def LOAD_csv():
     class point:                        #create class with position data and array of distance to all points
@@ -81,8 +81,6 @@ def closest_point(points_array ,point,route):
     for i in range(len(points_array)):                                          #calculate distance to all points around point using pythagoran theorem
         other_coord = np.array([points_array[i].x,points_array[i].y])
         distance_to = np.sqrt((own_coords[0]-other_coord[0])**2+(own_coords[1]-other_coord[1])**2)
-        distance_difference = inverse_pythagoran(points_array,point,i)
-        #distance_to = distance_difference[0]+distance_difference[1]
         if (distance_to < temp_shortest_distance and distance_to > 0) or temp_shortest_distance == 0:
             if(not point_on_route(i,route)):
                 temp_closest_point = i
