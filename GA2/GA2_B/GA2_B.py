@@ -21,7 +21,7 @@ def TestAlgo(Algo):
     pyplot.show()
     return TotalDistance/100, TotalTime
 
-Distance, Time = TestAlgo(Pher)#current algorithms are Pher, NearestNeighbour and RandomTries, they are the import files
+Distance, Time = TestAlgo(NearestNeighbour)#current algorithms are Pher, NearestNeighbour and RandomTries, they are the import files
 #this will give you the average distance the algorithm gives and how long it takes to do so
 #this allows you to test algorithms by importing them as classes and running them a lot with random points
 print(Distance)
