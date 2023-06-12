@@ -11,7 +11,7 @@ import ast
 
 #calculate shortest path using Closest node heuristic
 
-start_point = 3                 #what point to start at
+start_point = 0                 #what point to start at
 attempts = 1                   #how often to run the program to get average execution time
 add_points = 0                     #how many points to add when the program is run
 add_point_every_loop = False
@@ -58,15 +58,11 @@ def write_csv(distance, route):                                     #write total
         output_writer.writerow(route_row)
 
 def plot(points_objects,route):             #plot the points
-    temp_point_array = list([[],[]])
+    temp_point_array = points_objects  
     for i in range(len(points_objects)):
-        temp_point_array[0].append(points_objects[i].x)
-        temp_point_array[1].append(points_objects[i].y)
-    plt.scatter(temp_point_array[0],temp_point_array[1])  
-    for i in range(len(points_objects)):
-        plt.text(temp_point_array[0][i],temp_point_array[1][i],str(i))
-        plt.plot([points_objects[route[i]].x,points_objects[route[i+1]].x],[points_objects[route[i]].y,points_objects[route[i]].y])         #create the 1x1 square movement requirements
-        plt.plot([points_objects[route[i+1]].x,points_objects[route[i+1]].x],[points_objects[route[i]].y,points_objects[route[i+1]].y])
+        plt.text(temp_point_array[i][0],temp_point_array[i][1],str(i))
+        plt.plot([points_objects[route[i]][0],points_objects[route[i+1]][0]],[points_objects[route[i]][1],points_objects[route[i]][1]])         #create the 1x1 square movement requirements
+        plt.plot([points_objects[route[i+1]][0],points_objects[route[i+1]][0]],[points_objects[route[i]][1],points_objects[route[i+1]][1]])
     plt.show()
 
 def calculate_distances(points_array ,point,where):
@@ -75,13 +71,28 @@ def calculate_distances(points_array ,point,where):
     temp_point_array_norm = np.subtract(short_points_array,point)
     distance_array = np.linalg.norm(temp_point_array_norm,axis=1)           #use linear algebra to calculate the normalised vector values of the point from the origin
     for i,distance_to_point in enumerate(distance_array):
-            key = str([[i],[i+where+1]])  
+            key = str([i,i+where+1])  
             distance_dict[key] = distance_to_point
 
 def inverse_pythagoran(points_array,point1,point2):                                 #find horizontal and vertical distance from point to nearest point 
-    horizontal  = np.abs(points_array[point1].x - points_array[point2].x)
-    vertical    = np.abs(points_array[point1].y - points_array[point2].y)
+    horizontal  = np.abs(points_array[point1][0] - points_array[point2][0])
+    vertical    = np.abs(points_array[point1][1] - points_array[point2][1])
     return np.array([horizontal,vertical])
+
+def check_cycle(start_point, connections,route):
+    route = []
+    next_point = start_point
+    connections_temp = connections.copy()
+    for i in range(len(connections)):
+        next_point_location = np.where(np.asarray(connections_temp)[:,(0,1)] == next_point)
+        # print(np.asarray(np.asarray(connections_temp)[:,0] == next_point) or np.asarray(np.asarray(connections_temp)[:,1] == next_point))
+        if(np.size(next_point_location) == 0 ): return [False,route]
+        route.append(connections_temp[next_point_location[0][0]][next_point_location[1][0]])
+        next_point = connections_temp[next_point_location[0][0]][not next_point_location[1][0]]
+        if(next_point in route and len(route) < len(points)): return [True,route]
+        connections_temp.pop(next_point_location[0][0])
+    route.append(start_point)
+    return [False,route];
 
 points = list()   
 execution_times = list()
@@ -91,8 +102,9 @@ for repeat in range(attempts):
     distance_dict = {} 
     node_connections = np.zeros((len(points)))
     print(node_connections)
-    route = list()
+    route = []
     connections = list()
+    total_distance = 0
     max_connections = len(points)*2
     for i, current_point in enumerate(points):
         calculate_distances(points,current_point,i)
@@ -105,16 +117,24 @@ for repeat in range(attempts):
             break
         min_dist = min(distance_dict)
         connecting_points = ast.literal_eval(min_dist)
-        if(connecting_points == [[8],[9]]): print("nu")
-        if(node_connections[connecting_points[0]] < 2 and node_connections[connecting_points[1]] < 2):
+        if((node_connections[connecting_points[0]] < 2 and node_connections[connecting_points[1]] < 2)):
             print(min_dist)
+            total_distance += distance_dict[min_dist]
             connections.append(connecting_points)
-            node_connections[connecting_points[0]] += 1
-            node_connections[connecting_points[1]] += 1
+            if(check_cycle(start_point,connections,route)[0]):
+                connections.pop()
+                print("cycle at " + str(connecting_points))
+            else:
+                node_connections[connecting_points[0]] += 1
+                node_connections[connecting_points[1]] += 1
         distance_dict.pop(min_dist)
+    print("penis")
+    route = check_cycle(start_point,connections,route)[1]
     
-    print(connections)
 
+    print(connections)
+    print(route)
+    print(total_distance)
 
 
     execution_times.append(time.time() - start_time)
@@ -122,3 +142,5 @@ for repeat in range(attempts):
 np_execution_times = np.asarray(execution_times)
 print("average time: " + str(np.average(np_execution_times)))                       #count exectution time
 print("total time for %s attempts: " %(attempts) + str(np.sum(np_execution_times)))
+write_csv(total_distance,route)
+plot(points,route)
