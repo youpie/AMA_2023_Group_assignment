@@ -33,11 +33,22 @@ def calculate_points_y_equals_zero(conic_coefficients):
     return [x1, x2]
 
 def calculate_time(array):
+    xtotal = []
+    #add the input points to an array if they are bigger than 0
     for x in array:
         if x > 0:
-            print("Predicted landing location is:")
-            print(x)
+            xtotal.append(x)   
 
+    print("Predicted landing location is:")
+    if len(xtotal) > 1:
+        #prints furthest distance if the are multiple zeroes bigger than 0
+        if xtotal[0] < xtotal[1]:
+            print(xtotal[1])
+        else:
+            print(xtotal[0])
+        #otherwise just print the zero that was found
+    else:
+        print(xtotal[0])
 #inputfile is defined here
 file_path = 'inputGA1B.csv'
 
