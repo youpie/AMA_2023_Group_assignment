@@ -2,6 +2,12 @@ import numpy as np
 import csv
 import os
 import math
+import time
+import matplotlib.pyplot as plt
+
+starttime = time.time_ns()
+
+
 
 def Distance(Xa, Ya, Xb, Yb):
     D = (math.sqrt((Xa-Xb)**2+(Ya-Yb)**2))
@@ -13,6 +19,7 @@ with open(os.path.dirname(__file__) + "\inputGAS2A.csv", "r") as input:
     for pointentry in locations:
         point = [int(pointentry["Point number"]),float(pointentry["x"]), float(pointentry["y"])]
         pointarray.append(point)
+number,X,Y = zip(*pointarray)
 
 DistanceArray = []
 for i in pointarray:
@@ -47,6 +54,7 @@ for i in range(len(DistanceArray[0])-1):
             if DistanceArray[j][d]<sav[0] and DistanceArray[j][d] != 0:
                 sav = [DistanceArray[j][d], j, d]
             DistanceArray[j][d] = 0
+    plt.plot([X[sav[1]],X[sav[2]]],[Y[sav[1]],Y[sav[2]]])
     Outputlist[sav[1]+1][sav[2]+1] = str(round(sav[0], 3))
     Outputlist[sav[2]+1][sav[1]+1] = str(round(sav[0], 3))
 
@@ -56,3 +64,9 @@ for i in range(len(Outputlist[0])-1):
     Outputlist[0][i+1] = i+1
 
 np.savetxt(os.path.dirname(__file__) + '\OutputGAS2A1.csv', Outputlist, delimiter =", ", fmt ='% s')
+
+print("--- total runtime is: " + str((time.time_ns() - starttime)/1000000) + "ms ---")
+
+
+plt.scatter(X,Y)
+plt.show()

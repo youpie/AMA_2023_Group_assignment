@@ -3,6 +3,10 @@ import csv
 import os
 import math
 from collections import defaultdict
+import time
+import matplotlib.pyplot as plt
+
+starttime = time.time_ns()
 
 def Distance(Xa, Ya, Xb, Yb):
     D = (math.sqrt((Xa-Xb)**2+(Ya-Yb)**2))
@@ -64,9 +68,11 @@ class Graph:
                 e = e + 1
                 result.append([u, v, w])
                 self.apply_union(parent, rank, x, y)
+        number,X,Y = zip(*pointarray)
         for u, v, weight in result:
             Outputlist[u+1][v+1] = round(weight,3)
             Outputlist[v+1][u+1] = round(weight,3)
+            plt.plot([X[u],X[v]],[Y[u],Y[v]])
 
 Outputlist=[]
 for i in range(len(DistanceArray[0])+1):
@@ -88,3 +94,9 @@ for i in range(len(Outputlist[0])-1):
     Outputlist[0][i+1] = i+1
 
 np.savetxt(os.path.dirname(__file__) + '\OutputGAS2A2.csv', Outputlist, delimiter =", ", fmt ='% s')
+
+print("--- total runtime is: " + str((time.time_ns() - starttime)/1000000) + "ms ---")
+
+number,X,Y = zip(*pointarray)
+plt.scatter(X,Y)
+plt.show()
