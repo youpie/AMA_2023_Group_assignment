@@ -20,7 +20,7 @@ def calculate_conic_section(points):
     conic_coefficients = np.linalg.lstsq(A, b, rcond=None)[0]
     return conic_coefficients
 
-def calculate_points_y_equals_zero(conic_coefficients):
+def calculate_determinant_and_solutions(conic_coefficients):
     a, b, c, d, e = conic_coefficients
     #use discriminant of abc formula since al coefficients with y are 0
     discriminant = d**2 - 4 * a * 1
@@ -32,7 +32,7 @@ def calculate_points_y_equals_zero(conic_coefficients):
     x2 = (-d - math.sqrt(discriminant) )/(2*a)
     return [x1, x2]
 
-def calculate_time(array):
+def landing_location(array):
     xtotal = []
     #add the input points to an array if they are bigger than 0
     for x in array:
@@ -63,10 +63,10 @@ for i in points:
 #calculate conic section coefficients
 conic_coefficients = calculate_conic_section(points)
 #calculate zeroes
-points_y_equals_zero = calculate_points_y_equals_zero(conic_coefficients)
+points_y_equals_zero = calculate_determinant_and_solutions(conic_coefficients)
 #print all coefficients
 print("Conic section coefficients:", conic_coefficients)
 #print all zeroes
 print("Points where y = 0:", points_y_equals_zero)
 #print all positive zeroes (possible landing locations)
-calculate_time(points_y_equals_zero)
+landing_location(points_y_equals_zero)
