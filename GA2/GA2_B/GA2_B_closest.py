@@ -130,6 +130,10 @@ for repeat in range(attempts):
 
     execution_time = (time.time() - start_time)
     execution_times.append(execution_time)
+    distance_py = 0
+    for i in range(len(points)):
+        distance_py += points[i].distanceNearestPoint
+    print(distance_py)
 
     for i in range(len(points)):
         points[i].distanceNearestPoint = 0
