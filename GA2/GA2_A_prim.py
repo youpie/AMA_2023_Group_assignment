@@ -13,7 +13,7 @@ def Distance(Xa, Ya, Xb, Yb):
     D = (math.sqrt((Xa-Xb)**2+(Ya-Yb)**2))
     return D
 
-pointarray = []
+pointarray = [] 
 with open(os.path.dirname(__file__) + "\inputGAS2A.csv", "r") as input:
     locations = csv.DictReader(input)
     for pointentry in locations:
@@ -27,7 +27,7 @@ for i in pointarray:
     for j in pointarray:
         Columbs.append(Distance(i[1],i[2],j[1],j[2]))
     DistanceArray.append(Columbs)
-DistanceArray = np.asarray(DistanceArray)
+DistanceArray = np.asarray(DistanceArray)           
 
 Outputlist=[]
 for i in range(len(DistanceArray[0])+1):
