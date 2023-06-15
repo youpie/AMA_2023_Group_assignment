@@ -11,7 +11,7 @@ def TestAlgo(Algo):
     Ftime = time.time() #start checking time
     TotalDistance = 0
     for i in range(100):#for the average run amount of distance
-        NR, Xs, Ys = RandomPoints(90) #calls up a function in the randompoints file to generate 90 unique points
+        NR, Xs, Ys = RandomPoints(99) #calls up a function in the randompoints file to generate 90 unique points
         NBAlgo = Algo(NR, Xs, Ys) #runs the algorithm with the generated points
         Path, Distance = NBAlgo.RunAlgo()
         TotalDistance += Distance

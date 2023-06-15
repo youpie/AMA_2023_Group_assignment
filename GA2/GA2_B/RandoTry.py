@@ -6,9 +6,9 @@ import copy
 #imports 25 points and their x and y
 #exports route and total length
 
-class RandomTries:
-    def __init__(self, Pointnr, X, Y):
-        self.Pointnr = Pointnr
+class RandomTries:#this algorithm is very simple, generate a random path, how long is this path?
+    def __init__(self, Pointnr, X, Y):#is it shorter than the shortest found path? yes then save the path and the distance
+        self.Pointnr = Pointnr #and do this for x amount of times
         self.PointX = X
         self.PointY = Y
         self.PointX.insert(0,0)

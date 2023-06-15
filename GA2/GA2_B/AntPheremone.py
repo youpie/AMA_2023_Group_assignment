@@ -15,7 +15,7 @@ class Pher:
         self.PointY.insert(0,0)
         self.Pointnr.insert(0,0)
 
-    def Distancearray(self):
+    def Distancearray(self):#another distance array for ease of use.
         Array = []
         for i in range(len(self.PointX)):
             Column = []
@@ -24,10 +24,10 @@ class Pher:
             Array.append(Column)
         return Array
     
-    def RunAlgo(self):
-        DistanceArray = self.Distancearray()
-        ChanceArraySav = []
-        for i in range(len(self.PointX)):
+    def RunAlgo(self): #what the program is intended to do is use weighted chances to find the shortest path. 
+        DistanceArray = self.Distancearray()#it does this by finding a weighted random path
+        ChanceArraySav = []                 #if this path is short, add a lot it its weight
+        for i in range(len(self.PointX)):   #if its long, add nothing to it
             Column = []
             for j in range(len(self.PointY)):
                 if i == j:
@@ -62,7 +62,7 @@ class Pher:
                     Path[1].append(self.PointX[location])
                     Path[2].append(self.PointY[location])
                 EndCap = self.PointX[CurrentPoint] + self.PointY[CurrentPoint]
-                Addition = ((100/(EndCap+TotalDistance))*5)**2
+                Addition = ((900/(EndCap+TotalDistance))*5)**2
                 Path[0].append(0)
                 Path[1].append(0)
                 Path[2].append(0)

@@ -5,7 +5,7 @@ import math
 #exports route and total length
 
 class NearestNeighbour:
-    def __init__(self, Pointnr, X, Y):
+    def __init__(self, Pointnr, X, Y):#adds all points as input
         self.Pointnr = Pointnr
         self.PointX = X
         self.PointY = Y
@@ -13,7 +13,7 @@ class NearestNeighbour:
         self.PointY.insert(0,0)
         self.Pointnr.insert(0,0)
 
-    def Distancearray(self):
+    def Distancearray(self):#calculates a distance array list prim and kruskal
         Array = []
         for i in range(len(self.PointX)):
             Column = []
@@ -22,7 +22,7 @@ class NearestNeighbour:
             Array.append(Column)
         return Array
     
-    def RunAlgo(self):
+    def RunAlgo(self):#this algorithm is a lot alike prim, except it finds the smallest connection on the current point
         DistanceArray = self.Distancearray()
         CurrentPoint = 0
         TotalDistance = 0
