@@ -1,9 +1,6 @@
 import numpy as np
 import math
 
-#imports 25 points and their x and y
-#exports route and total length
-
 class NearestNeighbour:
     def __init__(self, Pointnr, X, Y):
         self.Pointnr = Pointnr
@@ -45,9 +42,9 @@ class NearestNeighbour:
         Path[1].append(0)
         Path[2].append(0)
         TotalDistance += (self.PointX[CurrentPoint] + self.PointY[CurrentPoint])
+
         Time = TotalDistance/17.4
         Time += len(self.PointX)*1.1*2
-        Prev = [0,0]
         for i in range(len(self.PointX)):
             DifX = self.PointX[Path[0][i]]-self.PointX[Path[0][i+1]]
             DifY = self.PointY[Path[0][i]]-self.PointY[Path[0][i+1]]
@@ -55,5 +52,4 @@ class NearestNeighbour:
                 pass
             else:
                 Time += 1.4
-            Prev = [DifX,DifY]
         return Path, TotalDistance, Time
