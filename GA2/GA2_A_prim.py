@@ -7,8 +7,6 @@ import matplotlib.pyplot as plt
 
 starttime = time.time_ns()
 
-
-
 def Distance(Xa, Ya, Xb, Yb):#calculates the distance between 2 points with pythagoras
     D = (math.sqrt((Xa-Xb)**2+(Ya-Yb)**2))
     return D
@@ -27,7 +25,7 @@ for i in pointarray:
     for j in pointarray:
         Columbs.append(Distance(i[1],i[2],j[1],j[2]))
     DistanceArray.append(Columbs)
-DistanceArray = np.asarray(DistanceArray)
+DistanceArray = np.asarray(DistanceArray)           
 
 Outputlist=[]#creates an empty output list
 for i in range(len(DistanceArray[0])+1):

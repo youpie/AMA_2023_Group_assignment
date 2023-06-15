@@ -6,16 +6,16 @@ mpl.use('GTK3Agg')
 import matplotlib.pyplot as plt
 import random
 from os import environ
-environ['OMP_NUM_THREADS'] = '4'
+environ['OPENBLAS_NUM_THREADS'] = '4'
 
 #calculate shortest path using Closest node heuristic
 
 start_point = 0                #what point to start at
-attempts = 100                   #how often to run the program to get average execution time
+attempts = 1                   #how often to run the program to get average execution time
 add_points = 0                 #how many points to add when the program is run
 add_point_every_loop = False
 
-def write_points(ammount,currlength,point_array):           #fill the input file with more random points
+def write_points(ammount,currlength):           #fill the input file with more random points
     if(ammount != 0):
         new_points = [[0],[0]]
         randomX = 0
@@ -44,7 +44,7 @@ def LOAD_csv():
         y = 0.0
         distanceNearestPoint = 0
         nearestPoint = 0
-    
+    temp_point_array = list([[0,0]])
     with open("/home/youpie/OneDrive/School!/AMA4/Projecten/Groep project/AMA_2023_Group_assignment/GA2/inputGAS2B.csv") as csv_file:
         next(csv_file)
         csv_read=csv.reader(csv_file, delimiter=',')
@@ -52,11 +52,15 @@ def LOAD_csv():
         p.x = 0
         p.y = 0
         points.append(p)
-        for row in csv_read:
+        for i,row in enumerate(csv_read):
             p = point()
-            p.x = int(row[1])
+            p.x = int(row[1])                           #we create both an array filled with coordinates as well as object for each point as the approach to reading coordinates was changed to optimize speed
             p.y = int(row[2])
+            temp_point_array.extend([[]])
+            temp_point_array[i+1].append(p.x)
+            temp_point_array[i+1].append(p.y)
             points.append(p)
+    return np.asarray(temp_point_array)
 
 def write_csv(distance, route):                                     #write total distance and route to csv file
     with open('/home/youpie/OneDrive/School!/AMA4/Projecten/Groep project/AMA_2023_Group_assignment/GA2/OutputGAS2B.csv', mode='w') as output_file:
@@ -85,68 +89,51 @@ def plot(points_objects,route):             #plot the points
         plt.plot([points_objects[route[i+1]].x,points_objects[route[i+1]].x],[points_objects[route[i]].y,points_objects[route[i+1]].y],color='tab:blue')
     plt.show()
 
-def load_points(points_array):
-    temp_point_array = np.full((len(points),2),np.nan)
-    for i in range(len(points_array)):                          #fill a 2D array with coordinates, instead of 2 arrays with x column and y column but just a bunch of xy arrays
-        temp_point_array[i][0] = points_array[i].x
-        temp_point_array[i][1] = points_array[i].y
-    return temp_point_array
-
-
-def closest_point(points_array ,point,obj_array):
-    own_coords = np.array([obj_array[point].x,obj_array[point].y])
+def closest_point(points_array ,point):
+    own_coords = np.copy(points_array[point])                            #create an array with all point locations. all already tested points have the position NaN so the process doesn't calculate them as thats not needed
     temp_point_array = points_array
-    temp_point_array[point] = own_coords
-    for ignore in route:                          #fill a 2D array with coordinates, instead of 2 arrays with x column and y column but just a bunch of xy arrays
-        temp_point_array[ignore] = own_coords
-    temp_point_array_norm = np.subtract(temp_point_array,own_coords)
+    temp_point_array_norm = np.subtract(temp_point_array,own_coords)        #normalize the array by subtracting the location of the point we are currently looking from (like setting that point as 0,0)
+    np.nan_to_num(temp_point_array_norm,0)
     distance_array = np.linalg.norm(temp_point_array_norm,axis=1)           #use linear algebra to calculate the normalised vector values of the point from the origin
     try:
-        closest_distance = np.min(distance_array[np.nonzero(distance_array)])
-        closest_point = np.where(distance_array == closest_distance)
+        closest_distance = np.min(distance_array[np.nonzero(distance_array)])   #find the smallest value that isnt zero and find the index of that value in the array
+        closest_point       = np.where(distance_array == closest_distance)
     except:
         closest_distance = 0                                                    #there is a very small chance that finding the minimal value goes wrong, this is to account for when that happens
         closest_point = [[0]]
-    points[point].distanceNearestPoint = closest_distance
-    points[point].nearestPoint = closest_point
+        print("This result is not accurate, please change input data")
     return int(closest_point[0][0])
 
-def inverse_pythagoran(points_array,point1,point2):                                 #find horizontal and vertical distance from point to nearest point 
-    horizontal  = np.abs(points_array[point1].x - points_array[point2].x)
-    vertical    = np.abs(points_array[point1].y - points_array[point2].y)
-    return np.array([horizontal,vertical])
+def inverse_pythagoran(points_array,route):                                 #find horizontal and vertical distance from point to nearest point 
+    point_coords_start = np.zeros((len(route),2))
+    for i in range(len(points)):
+        point_coords_start[i] = points_array[route[i]]
+    distances = np.subtract(np.roll(point_coords_start,(1,1)),point_coords_start)       #np.roll rolls the array forward by 1 so we can subtract the destination from the beginning point
+
+    return np.sum(np.abs(distances))
     
 points = list()             #create an array of objects of all points
 execution_times = list()
-LOAD_csv()
-write_points(add_points,len(points),points)
+point_coordinates = LOAD_csv()
+write_points(add_points,len(points))
 for repeat in range(attempts):
     start_time = time.time()                #start timer to time the time to execute code
     route = list()              #create array with the final route
-    total_distance = 0
-
-    if(add_point_every_loop):
-        write_points(add_points,len(points),points)    
-    point_distances = load_points(points)
+    total_distance = 0   
     current_point = start_point
     route.append(start_point)
-    while(len(points)!=len(route)):                                         #find the shortest distance from all points on route starting from starting point and following
-        closest_next_point = closest_point(point_distances,current_point,points)
+    shrinking_point_array = point_coordinates.astype(float)
+    while(len(point_coordinates)!=len(route)):                                         #find the shortest distance from all points on route starting from starting point and following
+        closest_next_point = closest_point(shrinking_point_array,current_point)
+        shrinking_point_array[route[-1]] = [np.nan,np.nan]                              #set the point last added to the route to NaN,NaN
         current_point = closest_next_point
-        route.append(closest_next_point)
+        route.append(closest_next_point)                                            #add the just found point to the route
     else:
         route.append(start_point)
-        last_point = start_point
-        for current_point in route:                                #calculate the total distance that has been traveled
-            distance = inverse_pythagoran(points, last_point, current_point)
-            last_point = current_point
-            total_distance += distance[0]+distance[1]   
+        total_distance = inverse_pythagoran(point_coordinates,route)                #calculate the total distance
 
     execution_time = (time.time() - start_time)
-    execution_times.append(execution_time)
-
-    for i in range(len(points)):
-        points[i].distanceNearestPoint = 0
+    execution_times.append(execution_time)                                    
 write_csv(total_distance,route)
 np_execution_times = np.asarray(execution_times)
 print("average time: " + str(np.average(np_execution_times)))                       #count exectution time
