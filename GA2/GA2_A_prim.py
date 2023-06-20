@@ -41,8 +41,17 @@ for i in range(len(DistanceArray[0])-1):#as prim algorithm goes, it adds point 1
         Row = DistanceArray[j]
         if np.min(Row[np.nonzero(Row)])<sav:
             sav = np.min(Row[np.nonzero(Row)])
-    location = np.asarray(np.where(DistanceArray == sav))
-    for Num in location[0]:
+    shatter = False
+    for i in Connected:
+        Row = DistanceArray[i]
+        for j in range(len(DistanceArray[0])):
+            if sav == Row[j]:
+                location = [i,j]
+                shatter = True
+                break
+        if shatter:
+            break
+    for Num in location:
         if Num not in Connected:
             Connected.append(Num)
             break
@@ -64,7 +73,6 @@ for i in range(len(Outputlist[0])-1):
 np.savetxt(os.path.dirname(__file__) + '\OutputGAS2A1.csv', Outputlist, delimiter =", ", fmt ='% s')#writes out the list
 
 print("--- total runtime is: " + str((time.time_ns() - starttime)/1000000) + "ms ---")#prints the total time taken
-
 
 plt.scatter(X,Y)
 plt.show()#plots all of the points and opens a graph to show the minimum spanning tree
