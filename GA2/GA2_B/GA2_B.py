@@ -1,4 +1,5 @@
 from NearestNeigAlgo import NearestNeighbour
+from PairwiseExchange import Exhange
 from AntPheremone import Pher
 from RandoTry import RandomTries
 import random
@@ -11,7 +12,7 @@ def TestAlgo(Algo):
     Ftime = time.time() #start checking time
     TotalDistance = 0
     for i in range(100):#for the average run amount of distance
-        NR, Xs, Ys = RandomPoints(99) #calls up a function in the randompoints file to generate 90 unique points
+        NR, Xs, Ys = RandomPoints(30) #calls up a function in the randompoints file to generate 90 unique points
         NBAlgo = Algo(NR, Xs, Ys) #runs the algorithm with the generated points
         Path, Distance = NBAlgo.RunAlgo()
         TotalDistance += Distance
@@ -22,7 +23,7 @@ def TestAlgo(Algo):
     pyplot.show()
     return TotalDistance/100, TotalTime
 
-Distance, Time = TestAlgo(Pher)#current algorithms are Pher, NearestNeighbour and RandomTries, they are the import files
+Distance, Time = TestAlgo(NearestNeighbour)#current algorithms are Pher, NearestNeighbour and RandomTries, they are the import files
 #this will give you the average distance the algorithm gives and how long it takes to do so
 #this allows you to test algorithms by importing them as classes and running them a lot with random points
 print(Distance)
