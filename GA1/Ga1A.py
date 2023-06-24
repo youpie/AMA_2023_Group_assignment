@@ -30,8 +30,21 @@ def fit_parabola(input_file):
 
     return parabola_equation, roots
 
+def calc_speed(input_file):
+    with open(input_file, 'r') as file:
+        reader = csv.reader(file, delimiter=';')
+        rows = list(reader)[1:]  # Skip the first row
+
+        # Extract the first and second point from the second row
+        second_row = rows[1]
+        t = float(second_row[0])
+        x = float(second_row[1])
+        #use the first point to calculate the speed needed to reach that point. This speed will be used to calculate the time to reach the landing point
+        speed = x * (1/t)
+    return speed
+
 #Load point file
-input_file = 'inputGA1A (1).csv'
+input_file = 'inputGA1A.csv'
 
 #use the function above with the correct input file to do all calculations
 equation, crossings = fit_parabola(input_file)
@@ -45,10 +58,11 @@ for x in crossings:
     if x > 0:
         print(f"x = {x}")
 
+speed = calc_speed(input_file)
 #print the time taken to reach each positive x
 print("Time to reach this point in seconds:")
 for x in crossings:
     if x > 0:
-        #time taken is calculated by distance/speed(m/s) (air resistance is not taken into account)
-        t = x / 9.32
+        #time taken is calculated by distance/speed(m/s) (air resistance is not taken into account) (speed is calculates in the calc_speed function)
+        t = x / speed
         print(f"t = {t}")
