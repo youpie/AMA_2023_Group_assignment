@@ -36,11 +36,19 @@ def calc_speed(input_file):
         rows = list(reader)[1:]  # Skip the first row
 
         # Extract the first and second point from the second row
-        second_row = rows[1]
+        second_row = rows[0]
+        if second_row[0] == 0:
+            second_row = rows[1]
+            print("error")
+        if second_row[1] == 0.0:
+            second_row = rows[1]
+            print("error2")     
         t = float(second_row[0])
         x = float(second_row[1])
         #use the first point to calculate the speed needed to reach that point. This speed will be used to calculate the time to reach the landing point
         speed = x * (1/t)
+        print("speed is:")
+        print(speed)
     return speed
 
 #Load point file
@@ -65,4 +73,6 @@ for x in crossings:
     if x > 0:
         #time taken is calculated by distance/speed(m/s) (air resistance is not taken into account) (speed is calculates in the calc_speed function)
         t = x / speed
+        if t < 0:
+            t = t*-1
         print(f"t = {t}")
