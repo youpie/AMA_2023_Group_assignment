@@ -35,7 +35,7 @@ def calc_speed(input_file):
         reader = csv.reader(file, delimiter=';')
         rows = list(reader)[1:]  # Skip the first row
         
-        # Extract the first and second point from the second row
+        # Extract each point and put it in a separate array
         point = rows[0]
         point2 = rows[1]
         point3 = rows[2]
