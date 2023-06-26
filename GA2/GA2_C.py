@@ -1,4 +1,4 @@
-from GA2_CAlgo import NearestNeighbour
+from GA2_CAlgo import Exhange
 from matplotlib import pyplot
 import matplotlib
 import numpy as np
@@ -16,12 +16,13 @@ def LoadPoints():
 
 PointArray = LoadPoints()
 Nr, Xs, Ys = zip(*PointArray)
-NBAlgo = NearestNeighbour(list(Nr), list(Xs), list(Ys))
-Path, Distance, Time = NBAlgo.RunAlgo()
+NBAlgo = Exhange(list(Nr), list(Xs), list(Ys))
+Path, Distance = NBAlgo.RunAlgo()
 
 pyplot.plot(Path[1],Path[2])
 pyplot.scatter(Path[1],Path[2])
 pyplot.show()
+Time = 0
 Outputlist = [0]
 Outputlist[0] = ("Total time: "+ str(Time))
 Outputlist.append("Route: " + str(Path[0]))

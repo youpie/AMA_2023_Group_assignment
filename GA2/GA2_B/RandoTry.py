@@ -34,7 +34,7 @@ class RandomTries:#this algorithm is very simple, generate a random path, how lo
                 TotalDistance += (abs(self.PointX[Current]-self.PointX[Next])+abs(self.PointY[Current]-self.PointY[Next]))
             if TotalDistance < MinDistance:
                 MinDistance = TotalDistance
-                PathSav = RandoPath
+                PathSav = copy.deepcopy(RandoPath)
         PathSav.pop(0)
         for Point in PathSav:
             Path[0].append(self.Pointnr[Point])
