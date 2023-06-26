@@ -34,19 +34,20 @@ def calc_speed(input_file):
     with open(input_file, 'r') as file:
         reader = csv.reader(file, delimiter=';')
         rows = list(reader)[1:]  # Skip the first row
-
+        
         # Extract the first and second point from the second row
-        second_row = rows[0]
-        if second_row[0] == 0:
-            second_row = rows[1]
-            print("error")
-        if second_row[1] == 0.0:
-            second_row = rows[1]
-            print("error2")     
-        t = float(second_row[0])
-        x = float(second_row[1])
-        #use the first point to calculate the speed needed to reach that point. This speed will be used to calculate the time to reach the landing point
-        speed = x * (1/t)
+        point = rows[0]
+        point2 = rows[1]
+        point3 = rows[2]
+        point4 = rows[3]
+        point5 = rows[4]
+
+        xtotal = float(point[1])+float(point2[1])+float(point3[1])+float(point4[1])+float(point5[1])
+        ttotal = float(point[0])+float(point2[0])+float(point3[0])+float(point4[0])+float(point5[0])
+        xaverage = xtotal/5
+        taverage = ttotal/5
+            #use the first point to calculate the speed needed to reach that point. This speed will be used to calculate the time to reach the landing point
+        speed = xaverage * (1/taverage)
         print("speed is:")
         print(speed)
     return speed
